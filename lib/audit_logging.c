@@ -54,8 +54,7 @@ static void _resolve_addr(char buf[], const char *host)
 
 	buf[0] = '?';
 	buf[1] = 0;
-	/* Short circuit this lookup if NULL, or empty */
-	if (host == NULL || *host == 0)
+	if (host == NULL) /* Short circuit this lookup if NULL */
 		return;
 
 	memset(&hints, 0, sizeof(hints));
@@ -86,9 +85,7 @@ int audit_value_needs_encoding(const char *str, unsigned int size)
 	int i;
 
 	for (i=0; i<size; i++) {
-		// we don't test for > 0x7f because str[] is signed
-		// and str[i] < 0x21 covers it.
-		if (str[i] == '"' || str[i] < 0x21)
+		if (str[i] == '"' || str[i] < 0x21 || str[i] > 0x7f)
 			return 1;
 	}
 	return 0;

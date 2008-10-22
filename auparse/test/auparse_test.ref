@@ -5,21 +5,13 @@ auid=848
 interp auid=unknown(848)
 auid=848
 interp auid=unknown(848)
-auid=4294967295
-interp auid=unset
-auid=848
-interp auid=unknown(848)
-auid=848
-interp auid=unknown(848)
-auid=848
-interp auid=unknown(848)
 Test 1 Done
 
 Starting Test 2, walk events, records, and fields...
 event 1 has 1 records
     record 1 of type 1006(LOGIN) has 5 fields
     line=1 file=None
-    event time: 1143146623.787:142, host=?
+    event time: 1143146623.787:142, host=(null)
         type=LOGIN (LOGIN)
         pid=2027 (2027)
         uid=0 (root)
@@ -29,7 +21,7 @@ event 1 has 1 records
 event 2 has 1 records
     record 1 of type 1300(SYSCALL) has 24 fields
     line=2 file=None
-    event time: 1143146623.875:143, host=?
+    event time: 1143146623.875:143, host=(null)
         type=SYSCALL (SYSCALL)
         arch=c000003e (x86_64)
         syscall=188 (setxattr)
@@ -58,7 +50,7 @@ event 2 has 1 records
 event 3 has 1 records
     record 1 of type 1112(USER_LOGIN) has 10 fields
     line=3 file=None
-    event time: 1143146623.879:146, host=?
+    event time: 1143146623.879:146, host=(null)
         type=USER_LOGIN (USER_LOGIN)
         pid=2027 (2027)
         uid=0 (root)
@@ -76,15 +68,15 @@ Starting Test 3, walk events, records of 1 buffer...
 event has 1 records
     record 1 of type 1112(USER_LOGIN) has 10 fields
     line=1 file=None
-    event time: 1143146623.879:146, host=?
+    event time: 1143146623.879:146, host=(null)
 
 Test 3 Done
 
 Starting Test 4, walk events, records of 1 file...
 event 1 has 4 records
     record 1 of type 1400(AVC) has 11 fields
-    line=1 file=./test.log
-    event time: 1170021493.977:293, host=?
+    line=1 file=test.log
+    event time: 1170021493.977:293, host=(null)
         type=AVC (AVC)
         seresult=denied (denied)
         seperms=read,write (read,write)
@@ -98,8 +90,8 @@ event 1 has 4 records
         tclass=dir (dir)
 
     record 2 of type 1300(SYSCALL) has 26 fields
-    line=2 file=./test.log
-    event time: 1170021493.977:293, host=?
+    line=2 file=test.log
+    event time: 1170021493.977:293, host=(null)
         type=SYSCALL (SYSCALL)
         arch=c000003e (x86_64)
         syscall=2 (open)
@@ -125,17 +117,17 @@ event 1 has 4 records
         comm="pickup" (pickup)
         exe="/usr/libexec/postfix/pickup" (/usr/libexec/postfix/pickup)
         subj=system_u:system_r:postfix_pickup_t:s0 (system_u:system_r:postfix_pickup_t:s0)
-        key=(null) ((null))
+        key="(null)" ((null))
 
     record 3 of type 1307(CWD) has 2 fields
-    line=3 file=./test.log
-    event time: 1170021493.977:293, host=?
+    line=3 file=test.log
+    event time: 1170021493.977:293, host=(null)
         type=CWD (CWD)
         cwd="/var/spool/postfix" (/var/spool/postfix)
 
     record 4 of type 1302(PATH) has 10 fields
-    line=4 file=./test.log
-    event time: 1170021493.977:293, host=?
+    line=4 file=test.log
+    event time: 1170021493.977:293, host=(null)
         type=PATH (PATH)
         item=0 (0)
         name="maildrop" (maildrop)
@@ -149,8 +141,8 @@ event 1 has 4 records
 
 event 2 has 1 records
     record 1 of type 1101(USER_ACCT) has 11 fields
-    line=5 file=./test.log
-    event time: 1170021601.340:294, host=?
+    line=5 file=test.log
+    event time: 1170021601.340:294, host=(null)
         type=USER_ACCT (USER_ACCT)
         pid=13015 (13015)
         uid=0 (root)
@@ -165,8 +157,8 @@ event 2 has 1 records
 
 event 3 has 1 records
     record 1 of type 1103(CRED_ACQ) has 11 fields
-    line=6 file=./test.log
-    event time: 1170021601.342:295, host=?
+    line=6 file=test.log
+    event time: 1170021601.342:295, host=(null)
         type=CRED_ACQ (CRED_ACQ)
         pid=13015 (13015)
         uid=0 (root)
@@ -181,8 +173,8 @@ event 3 has 1 records
 
 event 4 has 1 records
     record 1 of type 1006(LOGIN) has 5 fields
-    line=7 file=./test.log
-    event time: 1170021601.343:296, host=?
+    line=7 file=test.log
+    event time: 1170021601.343:296, host=(null)
         type=LOGIN (LOGIN)
         pid=13015 (13015)
         uid=0 (root)
@@ -191,8 +183,8 @@ event 4 has 1 records
 
 event 5 has 1 records
     record 1 of type 1105(USER_START) has 11 fields
-    line=8 file=./test.log
-    event time: 1170021601.344:297, host=?
+    line=8 file=test.log
+    event time: 1170021601.344:297, host=(null)
         type=USER_START (USER_START)
         pid=13015 (13015)
         uid=0 (root)
@@ -207,8 +199,8 @@ event 5 has 1 records
 
 event 6 has 1 records
     record 1 of type 1104(CRED_DISP) has 11 fields
-    line=9 file=./test.log
-    event time: 1170021601.364:298, host=?
+    line=9 file=test.log
+    event time: 1170021601.364:298, host=(null)
         type=CRED_DISP (CRED_DISP)
         pid=13015 (13015)
         uid=0 (root)
@@ -223,8 +215,8 @@ event 6 has 1 records
 
 event 7 has 1 records
     record 1 of type 1106(USER_END) has 11 fields
-    line=10 file=./test.log
-    event time: 1170021601.366:299, host=?
+    line=10 file=test.log
+    event time: 1170021601.366:299, host=(null)
         type=USER_END (USER_END)
         pid=13015 (13015)
         uid=0 (root)
@@ -243,7 +235,7 @@ Starting Test 5, walk events, records of 2 files...
 event 1 has 4 records
     record 1 of type 1400(AVC) has 11 fields
     line=1 file=test.log
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=AVC (AVC)
         seresult=denied (denied)
         seperms=read,write (read,write)
@@ -258,7 +250,7 @@ event 1 has 4 records
 
     record 2 of type 1300(SYSCALL) has 26 fields
     line=2 file=test.log
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=SYSCALL (SYSCALL)
         arch=c000003e (x86_64)
         syscall=2 (open)
@@ -284,17 +276,17 @@ event 1 has 4 records
         comm="pickup" (pickup)
         exe="/usr/libexec/postfix/pickup" (/usr/libexec/postfix/pickup)
         subj=system_u:system_r:postfix_pickup_t:s0 (system_u:system_r:postfix_pickup_t:s0)
-        key=(null) ((null))
+        key="(null)" ((null))
 
     record 3 of type 1307(CWD) has 2 fields
     line=3 file=test.log
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=CWD (CWD)
         cwd="/var/spool/postfix" (/var/spool/postfix)
 
     record 4 of type 1302(PATH) has 10 fields
     line=4 file=test.log
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=PATH (PATH)
         item=0 (0)
         name="maildrop" (maildrop)
@@ -309,7 +301,7 @@ event 1 has 4 records
 event 2 has 1 records
     record 1 of type 1101(USER_ACCT) has 11 fields
     line=5 file=test.log
-    event time: 1170021601.340:294, host=?
+    event time: 1170021601.340:294, host=(null)
         type=USER_ACCT (USER_ACCT)
         pid=13015 (13015)
         uid=0 (root)
@@ -325,7 +317,7 @@ event 2 has 1 records
 event 3 has 1 records
     record 1 of type 1103(CRED_ACQ) has 11 fields
     line=6 file=test.log
-    event time: 1170021601.342:295, host=?
+    event time: 1170021601.342:295, host=(null)
         type=CRED_ACQ (CRED_ACQ)
         pid=13015 (13015)
         uid=0 (root)
@@ -341,7 +333,7 @@ event 3 has 1 records
 event 4 has 1 records
     record 1 of type 1006(LOGIN) has 5 fields
     line=7 file=test.log
-    event time: 1170021601.343:296, host=?
+    event time: 1170021601.343:296, host=(null)
         type=LOGIN (LOGIN)
         pid=13015 (13015)
         uid=0 (root)
@@ -351,7 +343,7 @@ event 4 has 1 records
 event 5 has 1 records
     record 1 of type 1105(USER_START) has 11 fields
     line=8 file=test.log
-    event time: 1170021601.344:297, host=?
+    event time: 1170021601.344:297, host=(null)
         type=USER_START (USER_START)
         pid=13015 (13015)
         uid=0 (root)
@@ -367,7 +359,7 @@ event 5 has 1 records
 event 6 has 1 records
     record 1 of type 1104(CRED_DISP) has 11 fields
     line=9 file=test.log
-    event time: 1170021601.364:298, host=?
+    event time: 1170021601.364:298, host=(null)
         type=CRED_DISP (CRED_DISP)
         pid=13015 (13015)
         uid=0 (root)
@@ -383,7 +375,7 @@ event 6 has 1 records
 event 7 has 1 records
     record 1 of type 1106(USER_END) has 11 fields
     line=10 file=test.log
-    event time: 1170021601.366:299, host=?
+    event time: 1170021601.366:299, host=(null)
         type=USER_END (USER_END)
         pid=13015 (13015)
         uid=0 (root)
@@ -399,7 +391,7 @@ event 7 has 1 records
 event 8 has 4 records
     record 1 of type 1400(AVC) has 11 fields
     line=1 file=test2.log
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=AVC (AVC)
         seresult=denied (denied)
         seperms=read (read)
@@ -414,7 +406,7 @@ event 8 has 4 records
 
     record 2 of type 1300(SYSCALL) has 26 fields
     line=2 file=test2.log
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=SYSCALL (SYSCALL)
         arch=c000003e (x86_64)
         syscall=2 (open)
@@ -440,17 +432,17 @@ event 8 has 4 records
         comm="pickup" (pickup)
         exe="/usr/libexec/postfix/pickup" (/usr/libexec/postfix/pickup)
         subj=system_u:system_r:postfix_pickup_t:s0 (system_u:system_r:postfix_pickup_t:s0)
-        key=(null) ((null))
+        key="(null)" ((null))
 
     record 3 of type 1307(CWD) has 2 fields
     line=3 file=test2.log
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=CWD (CWD)
         cwd="/var/spool/postfix" (/var/spool/postfix)
 
     record 4 of type 1302(PATH) has 10 fields
     line=4 file=test2.log
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=PATH (PATH)
         item=0 (0)
         name="maildrop" (maildrop)
@@ -465,7 +457,7 @@ event 8 has 4 records
 event 9 has 1 records
     record 1 of type 1101(USER_ACCT) has 11 fields
     line=5 file=test2.log
-    event time: 1170021601.340:294, host=?
+    event time: 1170021601.340:294, host=(null)
         type=USER_ACCT (USER_ACCT)
         pid=13015 (13015)
         uid=0 (root)
@@ -481,7 +473,7 @@ event 9 has 1 records
 event 10 has 1 records
     record 1 of type 1103(CRED_ACQ) has 11 fields
     line=6 file=test2.log
-    event time: 1170021601.342:295, host=?
+    event time: 1170021601.342:295, host=(null)
         type=CRED_ACQ (CRED_ACQ)
         pid=13015 (13015)
         uid=0 (root)
@@ -497,7 +489,7 @@ event 10 has 1 records
 event 11 has 1 records
     record 1 of type 1006(LOGIN) has 5 fields
     line=7 file=test2.log
-    event time: 1170021601.343:296, host=?
+    event time: 1170021601.343:296, host=(null)
         type=LOGIN (LOGIN)
         pid=13015 (13015)
         uid=0 (root)
@@ -507,7 +499,7 @@ event 11 has 1 records
 event 12 has 1 records
     record 1 of type 1105(USER_START) has 11 fields
     line=8 file=test2.log
-    event time: 1170021601.344:297, host=?
+    event time: 1170021601.344:297, host=(null)
         type=USER_START (USER_START)
         pid=13015 (13015)
         uid=0 (root)
@@ -523,7 +515,7 @@ event 12 has 1 records
 event 13 has 1 records
     record 1 of type 1104(CRED_DISP) has 11 fields
     line=9 file=test2.log
-    event time: 1170021601.364:298, host=?
+    event time: 1170021601.364:298, host=(null)
         type=CRED_DISP (CRED_DISP)
         pid=13015 (13015)
         uid=0 (root)
@@ -539,7 +531,7 @@ event 13 has 1 records
 event 14 has 1 records
     record 1 of type 1106(USER_END) has 11 fields
     line=10 file=test2.log
-    event time: 1170021601.366:299, host=?
+    event time: 1170021601.366:299, host=(null)
         type=USER_END (USER_END)
         pid=13015 (13015)
         uid=0 (root)
@@ -576,18 +568,11 @@ Found type = USER_START
 Found auid = 0
 Test 7 Done
 
-Starting Test 8, regex search...
-Doing regex match...
-Found type = LOGIN
-Doing regex wildcard search...
-Found type = USER_LOGIN
-Test 8 Done
-
-Starting Test 9, buffer feed...
+Starting Test 8, buffer feed...
 event 1 has 1 records
     record 1 of type 1006(LOGIN) has 5 fields
     line=1 file=None
-    event time: 1143146623.787:142, host=?
+    event time: 1143146623.787:142, host=(null)
         type=LOGIN (LOGIN)
         pid=2027 (2027)
         uid=0 (root)
@@ -597,7 +582,7 @@ event 1 has 1 records
 event 2 has 1 records
     record 1 of type 1300(SYSCALL) has 24 fields
     line=2 file=None
-    event time: 1143146623.875:143, host=?
+    event time: 1143146623.875:143, host=(null)
         type=SYSCALL (SYSCALL)
         arch=c000003e (x86_64)
         syscall=188 (setxattr)
@@ -626,7 +611,7 @@ event 2 has 1 records
 event 3 has 1 records
     record 1 of type 1112(USER_LOGIN) has 10 fields
     line=3 file=None
-    event time: 1143146623.879:146, host=?
+    event time: 1143146623.879:146, host=(null)
         type=USER_LOGIN (USER_LOGIN)
         pid=2027 (2027)
         uid=0 (root)
@@ -638,13 +623,13 @@ event 3 has 1 records
         terminal=tty3 (tty3)
         res=success (success)
 
-Test 9 Done
+Test 8 Done
 
-Starting Test 10, file feed...
+Starting Test 9, file feed...
 event 1 has 4 records
     record 1 of type 1400(AVC) has 11 fields
     line=1 file=None
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=AVC (AVC)
         seresult=denied (denied)
         seperms=read,write (read,write)
@@ -659,7 +644,7 @@ event 1 has 4 records
 
     record 2 of type 1300(SYSCALL) has 26 fields
     line=2 file=None
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=SYSCALL (SYSCALL)
         arch=c000003e (x86_64)
         syscall=2 (open)
@@ -685,17 +670,17 @@ event 1 has 4 records
         comm="pickup" (pickup)
         exe="/usr/libexec/postfix/pickup" (/usr/libexec/postfix/pickup)
         subj=system_u:system_r:postfix_pickup_t:s0 (system_u:system_r:postfix_pickup_t:s0)
-        key=(null) ((null))
+        key="(null)" ((null))
 
     record 3 of type 1307(CWD) has 2 fields
     line=3 file=None
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=CWD (CWD)
         cwd="/var/spool/postfix" (/var/spool/postfix)
 
     record 4 of type 1302(PATH) has 10 fields
     line=4 file=None
-    event time: 1170021493.977:293, host=?
+    event time: 1170021493.977:293, host=(null)
         type=PATH (PATH)
         item=0 (0)
         name="maildrop" (maildrop)
@@ -710,7 +695,7 @@ event 1 has 4 records
 event 2 has 1 records
     record 1 of type 1101(USER_ACCT) has 11 fields
     line=5 file=None
-    event time: 1170021601.340:294, host=?
+    event time: 1170021601.340:294, host=(null)
         type=USER_ACCT (USER_ACCT)
         pid=13015 (13015)
         uid=0 (root)
@@ -726,7 +711,7 @@ event 2 has 1 records
 event 3 has 1 records
     record 1 of type 1103(CRED_ACQ) has 11 fields
     line=6 file=None
-    event time: 1170021601.342:295, host=?
+    event time: 1170021601.342:295, host=(null)
         type=CRED_ACQ (CRED_ACQ)
         pid=13015 (13015)
         uid=0 (root)
@@ -742,7 +727,7 @@ event 3 has 1 records
 event 4 has 1 records
     record 1 of type 1006(LOGIN) has 5 fields
     line=7 file=None
-    event time: 1170021601.343:296, host=?
+    event time: 1170021601.343:296, host=(null)
         type=LOGIN (LOGIN)
         pid=13015 (13015)
         uid=0 (root)
@@ -752,7 +737,7 @@ event 4 has 1 records
 event 5 has 1 records
     record 1 of type 1105(USER_START) has 11 fields
     line=8 file=None
-    event time: 1170021601.344:297, host=?
+    event time: 1170021601.344:297, host=(null)
         type=USER_START (USER_START)
         pid=13015 (13015)
         uid=0 (root)
@@ -768,7 +753,7 @@ event 5 has 1 records
 event 6 has 1 records
     record 1 of type 1104(CRED_DISP) has 11 fields
     line=9 file=None
-    event time: 1170021601.364:298, host=?
+    event time: 1170021601.364:298, host=(null)
         type=CRED_DISP (CRED_DISP)
         pid=13015 (13015)
         uid=0 (root)
@@ -784,7 +769,7 @@ event 6 has 1 records
 event 7 has 1 records
     record 1 of type 1106(USER_END) has 11 fields
     line=10 file=None
-    event time: 1170021601.366:299, host=?
+    event time: 1170021601.366:299, host=(null)
         type=USER_END (USER_END)
         pid=13015 (13015)
         uid=0 (root)
@@ -797,7 +782,7 @@ event 7 has 1 records
         terminal=cron (cron)
         res=success (success)
 
-Test 10 Done
+Test 9 Done
 
 Finished non-admin tests
 

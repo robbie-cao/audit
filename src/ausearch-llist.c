@@ -54,8 +54,6 @@ void list_create(llist *l)
 	l->s.arch = 0;
 	l->s.syscall = 0;
 	l->s.session_id = -1;
-	l->s.exit = 0;
-	l->s.exit_is_set = 0;
 }
 
 void list_last(llist *l)
@@ -194,9 +192,6 @@ void list_clear(llist* l)
 	l->s.node = NULL;
 	l->s.arch = 0;
 	l->s.syscall = 0;
-	l->s.session_id = -1;
-	l->s.exit = 0;
-	l->s.exit_is_set = 0;
 }
 
 int list_get_event(llist* l, event *e)

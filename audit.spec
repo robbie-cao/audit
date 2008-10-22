@@ -1,10 +1,12 @@
 %define sca_version 0.4.8
 %define sca_release 1
+%define selinux_variants mls strict targeted
+%define selinux_policyver 3.2.5 
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Summary: User space tools for 2.6 kernel auditing
 Name: audit
-Version: 1.7.8
+Version: 1.7.7
 Release: 1
 License: GPLv2+
 Group: System Environment/Daemons
@@ -61,10 +63,18 @@ Summary: Plugins for the audit event dispatcher
 License: GPLv2+
 Group: System Environment/Daemons
 BuildRequires: openldap-devel
+%if "%{selinux_policyver}" != ""
+BuildRequires: checkpolicy selinux-policy-devel >= %{selinux_policyver}
+%endif
 BuildRequires: libprelude-devel >= 0.9.16
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libs = %{version}-%{release}
 Requires: openldap
+%if "%{selinux_policyver}" != ""
+Requires: selinux-policy >= %{selinux_policyver}
+%endif
+Requires(post): /usr/sbin/semodule /sbin/restorecon
+Requires(postun): /usr/sbin/semodule
 
 %description -n audispd-plugins
 The audispd-plugins package provides plugins for the real-time
@@ -86,10 +96,26 @@ A graphical utility for editing audit configuration.
 
 %prep
 %setup -q
+mkdir zos-remote-policy
+cp -p audisp/plugins/zos-remote/policy/audispd-zos-remote.* zos-remote-policy
 
 %build
+(cd system-config-audit; ./autogen.sh)
 %configure --sbindir=/sbin --libdir=/%{_lib} --with-prelude --with-libwrap --enable-gssapi-krb5
 make %{?_smp_mflags}
+cd zos-remote-policy
+for selinuxvariant in %{selinux_variants}
+do
+  if [ "${selinuxvariant}" = "mls" ]; then
+    TYPE=mls-mls
+  else
+    TYPE=${selinuxvariant}-mcs
+  fi
+  make -f /usr/share/selinux/devel/Makefile
+  mv audispd-zos-remote.pp audispd-zos-remote.pp.${selinuxvariant}
+  make -f /usr/share/selinux/devel/Makefile clean
+done
+cd -
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -100,6 +126,12 @@ mkdir -p $RPM_BUILD_ROOT/%{_libdir}/audit
 mkdir -p $RPM_BUILD_ROOT/%{_var}/log/audit
 make DESTDIR=$RPM_BUILD_ROOT %{?_smp_mflags} install
 make -C system-config-audit DESTDIR=$RPM_BUILD_ROOT install-fedora
+for selinuxvariant in %{selinux_variants}
+do
+  install -d $RPM_BUILD_ROOT/%{_datadir}/selinux/${selinuxvariant}
+  install -p -m 644 zos-remote-policy/audispd-zos-remote.pp.${selinuxvariant} \
+    $RPM_BUILD_ROOT/%{_datadir}/selinux/${selinuxvariant}/audispd-zos-remote.pp
+done
 
 mkdir -p $RPM_BUILD_ROOT/%{_libdir}
 # This winds up in the wrong place when libtool is involved
@@ -139,8 +171,18 @@ make check
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+rm -rf zos-remote-policy
 
 %post libs -p /sbin/ldconfig
+
+%post -n audispd-plugins
+for selinuxvariant in %{selinux_variants}
+do
+  /usr/sbin/semodule -s $selinuxvariant \
+    -i %{_datadir}/selinux/$selinuxvariant/audispd-zos-remote.pp \
+    &> /dev/null || :
+done
+/sbin/restorecon -F /sbin/audispd-zos-remote /etc/audisp/zos-remote.conf
 
 %post
 /sbin/chkconfig --add auditd
@@ -171,6 +213,14 @@ if [ $1 -eq 0 ]; then
 fi
 
 %postun libs -p /sbin/ldconfig
+
+%postun -n audispd-plugins
+if [ $1 -eq 0 ]; then
+ for selinuxvariant in %{selinux_variants}
+ do
+   /usr/sbin/semodule -s $selinuxvariant -r audispd-zos-remote &>/dev/null || :
+ done
+fi
 
 %postun
 if [ $1 -ge 1 ]; then
@@ -244,6 +294,7 @@ fi
 %config(noreplace) %attr(640,root,root) /etc/audisp/plugins.d/audispd-zos-remote.conf
 %config(noreplace) %attr(640,root,root) /etc/audisp/zos-remote.conf
 %attr(750,root,root) /sbin/audispd-zos-remote
+%attr(644,root,root) %{_datadir}/selinux/*/audispd-zos-remote.pp
 %config(noreplace) %attr(640,root,root) /etc/audisp/plugins.d/au-prelude.conf
 %config(noreplace) %attr(640,root,root) /etc/audisp/audisp-prelude.conf
 %attr(750,root,root) /sbin/audisp-prelude
@@ -271,8 +322,6 @@ fi
 %config(noreplace) %{_sysconfdir}/security/console.apps/system-config-audit-server
 
 %changelog
-* Wed Sep 11 2008 Steve Grubb <sgrubb@redhat.com> 1.7.8-1
-
 * Wed Sep 11 2008 Steve Grubb <sgrubb@redhat.com> 1.7.7-1
 - Bug fixes for gss code in remote logging (DJ Delorie)
 - Fix ausearch -i to keep the node field in the output

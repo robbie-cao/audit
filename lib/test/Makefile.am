@@ -19,6 +19,8 @@
 #   Miloslav Trmač <mitr@redhat.com>
 #
 
+DISTCLEANFILES = Makefile.in
+
 check_PROGRAMS = lookup_test
 TESTS = $(check_PROGRAMS)
 

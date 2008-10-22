@@ -396,10 +396,18 @@ int main(void)
 	printf("Test 7 Done\n\n");
 
 	printf("Starting Test 8, regex search...\n");
+	au = auparse_init(AUSOURCE_BUFFER_ARRAY, buf);
+	if (au == NULL) {
+		printf("Error - %s\n", strerror(errno));
+		return 1;
+	}
 	puts("Doing regex match...");
 	regex_search("1143146623");
+	auparse_destroy(au);
+	au = auparse_init(AUSOURCE_BUFFER_ARRAY, buf);
 	puts("Doing regex wildcard search...");
 	regex_search("11431466.*146");
+	auparse_destroy(au);
 	printf("Test 8 Done\n\n");
 
 	/* Note: this should match Test 2 exactly */
@@ -462,7 +470,19 @@ int main(void)
 	}
         printf("Test 10 Done\n\n");
 
-	puts("Finished non-admin tests\n");
+	if (getuid() != 0) {
+		puts("Finished non-admin tests\n");
+		return 0;
+	}
+	printf("Starting Test 11, walk events, records of logs...\n");
+	au = auparse_init(AUSOURCE_LOGS, NULL);
+	if (au == NULL) {
+		printf("Error - %s\n", strerror(errno));
+		return 1;
+	}
+	light_test(au);
+	auparse_destroy(au);
+	printf("Test 11 Done\n\n");
 
 	return 0;
 }

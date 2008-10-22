@@ -1,5 +1,5 @@
-# Makefile.am-- 
-# Copyright 2007 Red Hat Inc., Durham, North Carolina.
+# Makefile.am --
+# Copyright 2008 Red Hat Inc., Durham, North Carolina.
 # All Rights Reserved.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,19 +20,7 @@
 #   Steve Grubb <sgrubb@redhat.com>
 #
 
-SUBDIRS = plugins 
-CONFIG_CLEAN_FILES = Makefile.in *.rej *.orig 
-AUTOMAKE_OPTIONS = no-dependencies
-INCLUDES = -I${top_srcdir} -I${top_srcdir}/lib
-sbin_PROGRAMS = audispd
-noinst_HEADERS = audispd-config.h audispd-pconfig.h audispd-llist.h \
-	queue.h audispd-builtins.h
-LIBS = -L${top_builddir}/src/mt -lauditmt 
-LDADD = -lpthread
-AM_CFLAGS = -D_REENTRANT 
+CONFIG_CLEAN_FILES = Makefile.in *.rej *.orig
 
-audispd_SOURCES = audispd.c audispd-config.c audispd-pconfig.c \
-	audispd-llist.c queue.c audispd-builtins.c
-audispd_CFLAGS = -fPIE -DPIE -g -D_GNU_SOURCE
-audispd_LDFLAGS = -pie -Wl,-z,relro
-
+EXTRA_DIST = audispd-zos-remote.fc audispd-zos-remote.if \
+	audispd-zos-remote.te build.sh install.sh
