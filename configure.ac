@@ -29,13 +29,12 @@ define([AC_INIT_NOTICE],
 ])
 
 AC_REVISION($Revision: 1.3 $)dnl
-AC_INIT(audit,2.0.2)
+AC_INIT(audit,1.7.14)
 AC_PREREQ(2.12)dnl
 AM_CONFIG_HEADER(config.h)
 
 echo Configuring auditd $VERSION
 
-AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 AM_PROG_LIBTOOL
@@ -197,16 +196,13 @@ AC_ARG_WITH(libwrap,
 if test x"$LIBWRAP_LIBS" != "x"; then
 	AC_DEFINE_UNQUOTED(HAVE_LIBWRAP, [], Define if tcp_wrappers support is enabled )
 fi
-
-# See if we want to support lower capabilities for plugins
-LIBCAP_NG_PATH
-
 AC_SUBST(DEBUG)
 AC_SUBST(LIBWRAP_LIBS)
 AC_SUBST(libev_LIBS)
 AC_SUBST(LIBPRELUDE_CFLAGS)
 AC_SUBST(LIBPRELUDE_LDFLAGS)
 
+AC_CONFIG_SUBDIRS([system-config-audit])
 AC_OUTPUT(Makefile lib/Makefile lib/test/Makefile auparse/Makefile auparse/test/Makefile src/Makefile src/mt/Makefile src/libev/Makefile src/test/Makefile swig/Makefile docs/Makefile init.d/Makefile audisp/Makefile audisp/plugins/Makefile audisp/plugins/builtins/Makefile audisp/plugins/prelude/Makefile audisp/plugins/remote/Makefile audisp/plugins/zos-remote/Makefile bindings/Makefile bindings/python/Makefile tools/Makefile tools/aulast/Makefile tools/aulastlog/Makefile tools/ausyscall/Makefile)
 
 echo .

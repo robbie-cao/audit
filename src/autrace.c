@@ -1,5 +1,5 @@
 /* autrace.c -- 
- * Copyright 2005-09 Red Hat Inc., Durham, North Carolina.
+ * Copyright 2005-08 Red Hat Inc., Durham, North Carolina.
  * All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -100,11 +100,9 @@ static int insert_rule(int audit_fd, const char *field)
 	rc = audit_add_rule_data(audit_fd, rule, flags, action);
 	if (rc < 0)
 		goto err;
-	free(rule);
 	return 0;
 err:
 	fprintf(stderr, "Error inserting audit rule for %s\n", field);
-	free(rule);
 	return 1;
 }
 
@@ -239,7 +237,7 @@ static int count_rules(void)
 	if (fd < 0) 
 		return -1;
 
-	rc = audit_request_rules_list_data(fd);
+	rc = audit_request_rules_list(fd);
 	if (rc > 0) 
 		total = count_em(fd);
 	else 
@@ -276,7 +274,7 @@ static int count_em(int fd)
 			{
 				case NLMSG_DONE:
 					return count;
-				case AUDIT_LIST_RULES:
+				case AUDIT_LIST:
 					i = 0;
 					count++;
 					break;

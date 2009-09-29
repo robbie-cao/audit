@@ -1,32 +1,4 @@
-2.0.2
-
-2.0.1
-- Aulast now reads daemon_start events for the kernel version of reboot
-- Clarify the man pages for ausearch/report regarding locale and date formats
-- Fix getloginuid for python bindings
-- Disable the audispd af_unix plugin by default
-- Add a couple new init script actions for LSB 3.2
-- In audisp-remote plugin, timeout network reads (#514090)
-- Make some error logging in audisp-remote plugin more prominent
-- Add audit.rules man page
-- Interpret the session field in audit events
-
-2.0
-- Remove system-config-audit
-- Get rid of () from userspace originating events
-- Removed old syscall rules API - not needed since 2.6.16
-- Remove all use of the old rule structs from API
-- Fix uninitialized variable in auditd log rotation
-- Add libcap-ng support for audispd plugins
-- Removed ancient defines that are part of kernel 2.6.29 headers
-- Bump soname number for libaudit
-- In auditctl, deprecate the entry filter and move rules to exit filter
-- Parse integrity audit records in ausearch/report (Mimi Zohar)
-- Updated syscall table for 2.6.31 kernel
-- Remove support for the legacy negate syscall rule operator
-- In auditd reset syslog warnings if disk space becomes available
-
-1.8
+1.7.14
 - In auditctl rules allow a0-a3 to be negative numbers
 - Add partial support for IMA integrity auditing
 - In s-c-audit, fix error handling with audit-1.7.12 and later
@@ -35,6 +7,12 @@
 - Aureport and ausearch do not need to stat the dispatcher
 - Make auparse handle empty AUSOURCE_FILE_ARRAY correctly (Miloslav Trmač)
 - Allow ausearch/report to specify multiple node names (Lenny Bruzenak)
+- Correct checking of != operator in audit_rule_fieldpair_data
+- Updated syscall table for 2.6.31 kernel
+- In auditd reset syslog warnings if disk space becomes available
+- Fix getloginuid for python bindings
+- In auditsp-remote plugin, timeout network reads (#514090)
+- Add audit.rules man page
 
 1.7.13
 - Disable libev asserts unless --with-debug passed to configure
