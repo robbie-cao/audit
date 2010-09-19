@@ -45,9 +45,6 @@
 #include <gssapi/gssapi_generic.h>
 #include <krb5.h>
 #endif
-#ifdef HAVE_LIBCAP_NG
-#include <cap-ng.h>
-#endif
 #include "libaudit.h"
 #include "private.h"
 #include "remote-config.h"
@@ -143,7 +140,8 @@ static int sync_error_handler (const char *why)
 	   be losing) sync.  Sync errors are transient - if a retry
 	   doesn't fix it, we eventually call network_failure_handler
 	   which has all the user-tweakable actions.  */
-	syslog (LOG_ERR, "lost/losing sync, %s", why);
+	if (config.network_failure_action == FA_SYSLOG)
+		syslog (LOG_ERR, "lost/losing sync, %s", why);
 	return 0;
 }
 
@@ -331,12 +329,6 @@ int main(int argc, char *argv[])
 		return 1;
 	init_queue(config.queue_depth);
 
-#ifdef HAVE_LIBCAP_NG
-	// Drop all capabilities
-	capng_clear(CAPNG_SELECT_BOTH);
-	capng_apply(CAPNG_SELECT_BOTH);
-#endif
-
 	do {
 		fd_set rfd;
 		struct timeval tv;
@@ -451,10 +443,9 @@ static int recv_token(int s, gss_buffer_t tok)
 		| ((uint32_t)(lenbuf[1] & 0xFF) << 16)
 		| ((uint32_t)(lenbuf[2] & 0xFF) << 8)
 		|  (uint32_t)(lenbuf[3] & 0xFF));
-
 	if (len > MAX_AUDIT_MESSAGE_LENGTH) {
 		syslog(LOG_ERR,
-			"GSS-API error: event length excedes MAX_AUDIT_LENGTH");
+			"GSS-API error: event length exceeds MAX_AUDIT_LENGTH");
 		return -1;
 	}
 	tok->length = len;
@@ -1065,15 +1056,19 @@ static int send_msg_tcp (unsigned char *header, const char *msg, uint32_t mlen)
 
 	rc = ar_write(sock, header, AUDIT_RMW_HEADER_SIZE);
 	if (rc <= 0) {
-		syslog(LOG_ERR, "send to %s failed", config.remote_server);
+		if (config.network_failure_action == FA_SYSLOG)
+			syslog(LOG_ERR, "connection to %s closed unexpectedly",
+			       config.remote_server);
 		return 1;
 	}
 
 	if (msg != NULL && mlen > 0) {
 		rc = ar_write(sock, msg, mlen);
 		if (rc <= 0) {
-			syslog(LOG_ERR, "send to %s failed",
-				config.remote_server);
+			if (config.network_failure_action == FA_SYSLOG)
+				syslog(LOG_ERR,
+				       "connection to %s closed unexpectedly",
+				       config.remote_server);
 			return 1;
 		}
 	}
@@ -1087,7 +1082,9 @@ static int recv_msg_tcp (unsigned char *header, char *msg, uint32_t *mlen)
 
 	rc = ar_read (sock, header, AUDIT_RMW_HEADER_SIZE);
 	if (rc < 16) {
-		syslog(LOG_ERR, "read from %s failed", config.remote_server);
+		if (config.network_failure_action == FA_SYSLOG)
+			syslog(LOG_ERR, "connection to %s closed unexpectedly",
+			       config.remote_server);
 		return -1;
 	}
 

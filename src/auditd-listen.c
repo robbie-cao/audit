@@ -195,7 +195,7 @@ static int recv_token (int s, gss_buffer_t tok)
 	       | lenbuf[3]);
 	if (len > MAX_AUDIT_MESSAGE_LENGTH) {
 		audit_msg(LOG_ERR,
-			"GSS-API error: event length excedes MAX_AUDIT_LENGTH");
+			"GSS-API error: event length exceeds MAX_AUDIT_LENGTH");
 		return -1;
 	}
 	tok->length = len;
@@ -286,9 +286,7 @@ static void gss_failure (const char *msg, int major_status, int minor_status)
 }
 
 #define KCHECK(x,f) if (x) { \
-		const char *kstr = krb5_get_error_message(kcontext, x); \
-		audit_msg(LOG_ERR, "krb5 error: %s in %s\n", kstr, f); \
-		krb5_free_error_message(kcontext, kstr); \
+		audit_msg (LOG_ERR, "krb5 error: %s in %s\n", krb5_get_error_message (kcontext, x), f); \
 		return -1; }
 
 /* These are our private credentials, which come from a key file on

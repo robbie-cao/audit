@@ -49,7 +49,6 @@ static int parse_login(const lnode *n, search_items *s);
 static int parse_daemon(const lnode *n, search_items *s);
 static int parse_sockaddr(const lnode *n, search_items *s);
 static int parse_avc(const lnode *n, search_items *s);
-static int parse_integrity(const lnode *n, search_items *s);
 static int parse_kernel_anom(const lnode *n, search_items *s);
 static int parse_simple_message(const lnode *n, search_items *s);
 static int parse_tty(const lnode *n, search_items *s);
@@ -123,9 +122,6 @@ int extract_search_items(llist *l)
 				break;
 			case AUDIT_MAC_POLICY_LOAD...AUDIT_MAC_UNLBL_STCDEL:
 				ret = parse_simple_message(n, s);
-				break;
-			case AUDIT_INTEGRITY_DATA...AUDIT_INTEGRITY_RULE:
-				ret = parse_integrity(n, s);
 				break;
 			case AUDIT_KERNEL:
 			case AUDIT_IPC:
@@ -782,15 +778,11 @@ static int parse_user(const lnode *n, search_items *s)
 		if (str) {
 			str += 9;
 			term = strchr(str, ',');
-			if (term == NULL) {
-				term = strchr(str, ' ');
-				if (term == NULL)
-					return 15;
-			}
-			saved = *term;
+			if (term == NULL)
+				return 15;
 			*term = 0;
 			s->hostname = strdup(str);
-			*term = saved;
+			*term = ',';
 
 			// Lets see if there is something more
 			// meaningful in addr
@@ -800,16 +792,12 @@ static int parse_user(const lnode *n, search_items *s)
 				if (str) {
 					str += 5;
 					term = strchr(str, ',');
-					if (term == NULL) {
-						term = strchr(str, ' ');
-						if (term == NULL)
-							return 16;
-					}
-					saved = *term;
+					if (term == NULL)
+						return 16;
 					*term = 0;
 					free(s->hostname);
 					s->hostname = strdup(str);
-					*term = saved;
+					*term = ',';
 				}
 			}
 		}
@@ -1161,97 +1149,6 @@ static int parse_sockaddr(const lnode *n, search_items *s)
 	}
 	return 0;
 }
-
-static int parse_integrity(const lnode *n, search_items *s)
-{
-	char *ptr, *str, *term;
-
-	term = n->message;
-	// get pid
-	str = strstr(term, "pid=");
-	if (str) {
-		ptr = str + 4;
-		term = strchr(ptr, ' ');
-		if (term == NULL)
-			return 2;
-		*term = 0;
-		errno = 0;
-		s->pid = strtoul(ptr, NULL, 10);
-		if (errno)
-			return 3;
-		*term = ' ';
-	}
-
-	// get uid
-	str = strstr(term, " uid=");
-	if (str) {
-		ptr = str + 4;
-		term = strchr(ptr, ' ');
-		if (term == NULL)
-			return 4;
-		*term = 0;
-		errno = 0;
-		s->uid = strtoul(ptr, NULL, 10);
-		if (errno)
-			return 5;
-		*term = ' ';
-	}
-
-	// get loginuid
-	str = strstr(n->message, "auid=");
-	if (str) {
-		ptr = str + 5;
-		term = strchr(ptr, ' ');
-		if (term == NULL)
-			return 6;
-		*term = 0;
-		errno = 0;
-		s->loginuid = strtoul(ptr, NULL, 10);
-		if (errno)
-			return 7;
-		*term = ' ';
-	}
-
-	str = strstr(term, "comm=");
-	if (str) {
-		str += 5;
-		if (*str == '"') {
-			str++;
-			term = strchr(str, '"');
-			if (term == NULL)
-				return 8;
-			*term = 0;
-			s->comm = strdup(str);
-			*term = '"';
-		} else
-			s->comm = unescape(str);
-	}
-
-	str = strstr(term, " name=");
-	if (str) {
-		str += 6;
-		if (common_path_parser(s, str))
-			return 9;
-	}
-
-	// and results (usually last)
-	str = strstr(term, "res=");
-	if (str != NULL) {
-		ptr = str + 4;
-		term = strchr(ptr, ' ');
-		if (term)
-			*term = 0;
-		errno = 0;
-		s->success = strtoul(ptr, NULL, 10);
-		if (errno)
-			return 10;
-		if (term)
-			*term = ' ';
-	}
-
-	return 0;
-}
-
 
 /* FIXME: If they are in permissive mode or hit an auditallow, there can 
  * be more that 1 avc in the same syscall. For now, we pickup just the first.

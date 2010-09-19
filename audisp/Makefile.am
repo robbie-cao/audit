@@ -36,5 +36,3 @@ audispd_SOURCES = audispd.c audispd-config.c audispd-pconfig.c \
 audispd_CFLAGS = -fPIE -DPIE -g -D_GNU_SOURCE
 audispd_LDFLAGS = -pie -Wl,-z,relro
 
-install-exec-hook:
-	chmod 0750 $(DESTDIR)$(sbindir)/audispd

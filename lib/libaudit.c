@@ -1,5 +1,5 @@
 /* libaudit.c -- 
- * Copyright 2004-2009 Red Hat Inc., Durham, North Carolina.
+ * Copyright 2004-2007 Red Hat Inc., Durham, North Carolina.
  * All Rights Reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -34,7 +34,6 @@
 #include <errno.h>
 #include <sys/poll.h>
 #include <sys/utsname.h>
-#include <sys/stat.h>
 #include <fcntl.h>	/* O_NOFOLLOW needs gnu defined */
 #include <limits.h>	/* for PATH_MAX */
 
@@ -93,7 +92,8 @@ static const struct kw_pair keywords[] =
   { NULL,		NULL }
 };
 
-static int audit_priority(int xerrno)
+/* FIXME: Make this static again after deprecated functions no longer need it */
+int hidden audit_priority(int xerrno)
 {
 	/* If they've compiled their own kernel and did not include
 	 * the audit susbsystem, they will get ECONNREFUSED. We'll
@@ -593,10 +593,6 @@ int audit_add_rule_data(int fd, struct audit_rule_data *rule,
 {
 	int rc;
 
-	if (flags == AUDIT_FILTER_ENTRY) {
-		audit_msg(LOG_WARNING, "Use of entry filter is deprecated");
-		return -2;
-	}
 	rule->flags  = flags;
 	rule->action = action;
 	rc = audit_send(fd, AUDIT_ADD_RULE, rule, 
@@ -614,10 +610,6 @@ int audit_delete_rule_data(int fd, struct audit_rule_data *rule,
 {
 	int rc;
 
-	if (flags == AUDIT_FILTER_ENTRY) {
-		audit_msg(LOG_WARNING, "Use of entry filter is deprecated");
-		return -2;
-	}
 	rule->flags  = flags;
 	rule->action = action;
 	rc = audit_send(fd, AUDIT_DEL_RULE, rule, 
@@ -1131,12 +1123,7 @@ int audit_rule_fieldpair_data(struct audit_rule_data **rulep, const char *pair,
 			if (!isdigit((char)*(v)))
 				return -21;
 
-			if (field == AUDIT_INODE)
-				rule->values[rule->field_count] =
-					strtoul(v, NULL, 0);
-			else
-				rule->values[rule->field_count] =
-					strtol(v, NULL, 0);
+			rule->values[rule->field_count] = strtol(v, NULL, 0);
 			break;
 	}
 	rule->field_count++;

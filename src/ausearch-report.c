@@ -1,6 +1,6 @@
 /*
 * ausearch-report.c - Format and output events
-* Copyright (c) 2005-09 Red Hat Inc., Durham, North Carolina.
+* Copyright (c) 2005-08 Red Hat Inc., Durham, North Carolina.
 * All Rights Reserved. 
 *
 * This software may be freely redistributed and/or modified under the
@@ -51,7 +51,7 @@ struct nv_pair {
 /* This is the list of field types that we can interpret */
 enum { T_UID, T_GID, T_SYSCALL, T_ARCH, T_EXIT, T_ESCAPED, T_PERM, T_MODE, 
 T_SOCKADDR, T_FLAGS, T_PROMISC, T_CAPABILITY, T_SIGNAL, T_KEY, T_LIST,
-T_TTY_DATA, T_SESSION, T_CAP_BITMAP };
+T_TTY_DATA };
 
 /* Function in ausearch-parse for unescaping filenames */
 extern char *unescape(char *buf);
@@ -356,12 +356,6 @@ static struct nv_pair typetab[] = {
 	{T_CAPABILITY, "capability"},
 	{T_SIGNAL, "sig"},
 	{T_LIST, "list"},
-	{T_SESSION, "ses"},
-	{T_CAP_BITMAP, "cap_pi"},
-	{T_CAP_BITMAP, "cap_pe"},
-	{T_CAP_BITMAP, "cap_pp"},
-	{T_CAP_BITMAP, "cap_fi"},
-	{T_CAP_BITMAP, "cap_fp"},
 };
 #define TYPE_NAMES (sizeof(typetab)/sizeof(typetab[0]))
 
@@ -831,9 +825,6 @@ static struct nv_pair captab[] = {
         {28, "lease"},
         {29, "audit_write"},
         {30, "audit_control"},
-        {31, "setfcap"},
-        {32, "mac_overide"},
-        {33, "mac_admin"},
 };
 #define CAP_NAMES (sizeof(captab)/sizeof(captab[0]))
 
@@ -855,35 +846,6 @@ static void print_capabilities(char *val)
 		}
 
 	}
-}
-
-static void print_cap_bitmap(char *val)
-{
-#define MASK(x) (1U << (x))
-	unsigned long long temp;
-	__u32 caps[2];
-	int i, found=0;
-
-	errno = 0;
-	temp = strtoull(val, NULL, 16);
-	if (errno) {
-		printf("conversion error(%s) ", val);
-		return;
-	}
-
-	caps[0] = temp & 0xFFFFFFFF;
-	caps[1] = (temp & 0xFFFFFFFF) >> 32;
-	for (i=0; i< CAP_NAMES; i++) {
-		if (MASK(i%32) & caps[i/32]) {
-			if (found)
-				printf(",");
-       			printf("%s", captab[i].name);
-			found = 1;
-		}
-	}
-	if (found == 0)
-		printf("none");
-	printf(" ");
 }
 
 static void print_signals(char *val)
@@ -942,14 +904,6 @@ static void print_list(char *val)
 		return;
 	}
 	printf("%s ", audit_flag_to_name(i));
-}
-
-static void print_session(char *val)
-{
-	if (strcmp(val, "4294967295") == 0)
-		printf("unset ");
-	else
-		printf("%s ", val);
 }
 
 static void interpret(char *name, char *val, int comma, int rtype)
@@ -1028,12 +982,6 @@ static void interpret(char *name, char *val, int comma, int rtype)
 			break;
 		case T_TTY_DATA:
 			print_tty_data(val);
-			break;
-		case T_SESSION:
-			print_session(val);
-			break;
-		case T_CAP_BITMAP:
-			print_cap_bitmap(val);
 			break;
 		default:
 			printf("%s%c", val, comma ? ',' : ' ');
