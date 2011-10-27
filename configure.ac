@@ -29,17 +29,17 @@ define([AC_INIT_NOTICE],
 ])
 
 AC_REVISION($Revision: 1.3 $)dnl
-AC_INIT(audit,2.1.4)
+AC_INIT(audit,1.8)
 AC_PREREQ(2.12)dnl
 AM_CONFIG_HEADER(config.h)
 
 echo Configuring auditd $VERSION
 
-AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 AM_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
+AM_PATH_PYTHON
 OLDLIBS="$LIBS"
 m4_include([src/libev/libev.m4])
 libev_LIBS="$LIBS"
@@ -77,31 +77,6 @@ if test x"$GCC" = x"yes"; then
              ;;
     esac
 fi
-
-AC_MSG_CHECKING(whether to create python bindings)
-AC_ARG_WITH(python,
-AS_HELP_STRING([--with-python],[enable building python bindings]),
-use_python=$withval,
-use_python=auto)
-if test x$use_python = xno ; then
-	python_found="no"
-	AC_MSG_RESULT(no)
-else
-AC_MSG_RESULT(testing)
-AM_PATH_PYTHON
-if test -f /usr/include/python${am_cv_python_version}/Python.h ; then
-	python_found="yes"
-	AC_MSG_NOTICE(Python bindings will be built)
-else
-	python_found="no"
-	if test x$use_python = xyes ; then
-		AC_MSG_ERROR([Python explicitly required and python headers found])
-	else
-		AC_MSG_WARN("Python headers not found - python bindings will not be made")
-	fi
-fi
-fi
-AM_CONDITIONAL(HAVE_PYTHON, test ${python_found} = "yes")
 
 #gssapi
 AC_ARG_ENABLE(gssapi_krb5,
@@ -245,16 +220,13 @@ AC_ARG_WITH(libwrap,
 if test x"$LIBWRAP_LIBS" != "x"; then
 	AC_DEFINE_UNQUOTED(HAVE_LIBWRAP, [], Define if tcp_wrappers support is enabled )
 fi
-
-# See if we want to support lower capabilities for plugins
-LIBCAP_NG_PATH
-
 AC_SUBST(DEBUG)
 AC_SUBST(LIBWRAP_LIBS)
 AC_SUBST(libev_LIBS)
 AC_SUBST(LIBPRELUDE_CFLAGS)
 AC_SUBST(LIBPRELUDE_LDFLAGS)
 
+AC_CONFIG_SUBDIRS([system-config-audit])
 AC_OUTPUT(Makefile lib/Makefile lib/test/Makefile auparse/Makefile auparse/test/Makefile src/Makefile src/mt/Makefile src/libev/Makefile src/test/Makefile swig/Makefile docs/Makefile init.d/Makefile audisp/Makefile audisp/plugins/Makefile audisp/plugins/builtins/Makefile audisp/plugins/prelude/Makefile audisp/plugins/remote/Makefile audisp/plugins/zos-remote/Makefile bindings/Makefile bindings/python/Makefile tools/Makefile tools/aulast/Makefile tools/aulastlog/Makefile tools/ausyscall/Makefile)
 
 echo .

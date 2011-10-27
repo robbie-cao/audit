@@ -525,7 +525,7 @@ static int common_path_parser(search_items *s, char *path)
 		//create
 		s->filename = malloc(sizeof(slist));
 		if (s->filename == NULL)
-			return 1;
+			return 4;
 		slist_create(s->filename);
 	}
 	if (*path == '"') {
@@ -533,7 +533,7 @@ static int common_path_parser(search_items *s, char *path)
 		path++;
 		term = strchr(path, '"');
 		if (term == NULL)
-			return 2;
+			return 1;
 		*term = 0;
 		if (s->filename) {
 			// append
@@ -568,7 +568,7 @@ static int common_path_parser(search_items *s, char *path)
 				goto append;
 			}
 			if (!isxdigit(path[0]))
-				return 4;
+				return 5;
 			if (path[0] == '0' && path[1] == '0')
 				sn.str = unescape(&path[2]); // Abstract name
 			else
@@ -578,7 +578,7 @@ static int common_path_parser(search_items *s, char *path)
 				(sn.str[1] == '/')) && s->cwd) {
 				char *tmp = malloc(PATH_MAX);
 				if (tmp == NULL)
-					return 5;
+					return 6;
 				snprintf(tmp, PATH_MAX, "%s/%s", 
 					s->cwd, sn.str);
 				free(sn.str);
@@ -754,7 +754,7 @@ static int parse_user(const lnode *n, search_items *s)
 			str += 5;
 			term = strchr(str, ' ');
 			if (term == NULL)
-				return 12;
+				return 10;
 			*term = 0;
 			if (audit_avc_init(s) == 0) {
 				anode an;
@@ -764,7 +764,7 @@ static int parse_user(const lnode *n, search_items *s)
 				alist_append(s->avc, &an);
 				*term = ' ';
 			} else
-				return 13;
+				return 11;
 		}
 	}
 	// get uid - something has uid after auid ??
@@ -851,7 +851,7 @@ static int parse_user(const lnode *n, search_items *s)
 			if (term == NULL) {
 				term = strchr(str, ' ');
 				if (term == NULL)
-					return 17;
+					return 15;
 			}
 			saved = *term;
 			*term = 0;
@@ -869,7 +869,7 @@ static int parse_user(const lnode *n, search_items *s)
 					if (term == NULL) {
 						term = strchr(str, ' ');
 						if (term == NULL)
-							return 18;
+							return 16;
 					}
 					saved = *term;
 					*term = 0;
@@ -889,7 +889,7 @@ static int parse_user(const lnode *n, search_items *s)
 			if (term == NULL) {
 				term = strchr(str, ')');
 				if (term == NULL)
-					return 19;
+					return 17;
 			}
 			*term = 0;
 			s->terminal = strdup(str);
@@ -905,7 +905,7 @@ static int parse_user(const lnode *n, search_items *s)
 				str++;
 				term = strchr(str, '"');
 				if (term == NULL)
-					return 20;
+					return 18;
 				*term = 0;
 				s->exe = strdup(str);
 				*term = '"';
@@ -939,7 +939,7 @@ static int parse_user(const lnode *n, search_items *s)
 			ptr = str + 4;
 			term = strchr(ptr, '\'');
 			if (term == NULL)
-				return 21;
+				return 19;
 			*term = 0;
 			if (strncmp(ptr, "failed", 6) == 0)
 				s->success = S_FAILED;
@@ -950,7 +950,7 @@ static int parse_user(const lnode *n, search_items *s)
 			ptr = str + 7;
 			term = strchr(ptr, ')');
 			if (term == NULL)
-				return 22;
+				return 20;
 			*term = 0;
 			if (strcasecmp(ptr, "success") == 0)
 				s->success = S_SUCCESS;
@@ -1065,34 +1065,34 @@ static int parse_daemon1(const lnode *n, search_items *s)
 	// auid
 	str = strstr(mptr, "auid=");
 	if (str == NULL)
-		return 1;
+		return 2;
 	ptr = str + 5;
 	term = strchr(ptr, ' ');
 	if (term == NULL)
-		return 2;
+		return 3;
 	saved = *term;
 	*term = 0;
 	errno = 0;
 	s->loginuid = strtoul(ptr, NULL, 10);
 	if (errno)
-		return 3;
+		return 4;
 	*term = saved;
 
 	// pid
 	if (event_pid != -1) {
 		str = strstr(term, "pid=");
 		if (str == NULL)
-			return 4;
+			return 5;
 		ptr = str + 4;
 		term = strchr(ptr, ' ');
 		if (term == NULL) 
-			return 5;
+			return 6;
 		saved = *term;
 		*term = 0;
 		errno = 0;
 		s->pid = strtoul(ptr, NULL, 10);
 		if (errno)
-			return 6;
+			return 7;
 		*term = saved;
 	}
 
@@ -1103,7 +1103,7 @@ static int parse_daemon1(const lnode *n, search_items *s)
 			str += 5;
 			term = strchr(str, ' ');
 			if (term == NULL)
-				return 7;
+				return 8;
 			*term = 0;
 			if (audit_avc_init(s) == 0) {
 				anode an;
@@ -1113,7 +1113,7 @@ static int parse_daemon1(const lnode *n, search_items *s)
 				alist_append(s->avc, &an);
 				*term = ' ';
 			} else
-				return 8;
+				return 9;
 		}
 	}
 
@@ -1602,7 +1602,7 @@ static int parse_kernel_anom(const lnode *n, search_items *s)
 			str += 5;
 			term = strchr(str, ' ');
 			if (term == NULL)
-				return 8;
+				return 7;
 			*term = 0;
 			if (audit_avc_init(s) == 0) {
 				anode an;
@@ -1612,7 +1612,7 @@ static int parse_kernel_anom(const lnode *n, search_items *s)
 				alist_append(s->avc, &an);
 				*term = ' ';
 			} else
-				return 9;
+				return 8;
 		}
 	}
 
@@ -1623,12 +1623,12 @@ static int parse_kernel_anom(const lnode *n, search_items *s)
 			ptr = str + 4;
 			term = strchr(ptr, ' ');
 			if (term == NULL)
-				return 10;
+				return 9;
 			*term = 0;
 			errno = 0;
 			s->pid = strtoul(ptr, NULL, 10);
 			if (errno)
-				return 11;
+				return 10;
 			*term = ' ';
 		}
 	}
@@ -1642,7 +1642,7 @@ static int parse_kernel_anom(const lnode *n, search_items *s)
 				str++;
 				term = strchr(str, '"');
 				if (term == NULL)
-					return 12;
+					return 11;
 				*term = 0;
 				s->comm = strdup(str);
 				*term = '"';

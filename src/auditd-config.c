@@ -334,7 +334,7 @@ int load_config(struct daemon_conf *config, log_test_t lt)
 	}
 
 	/* it's ok, read line by line */
-	f = fdopen(fd, "rm");
+	f = fdopen(fd, "r");
 	if (f == NULL) {
 		audit_msg(LOG_ERR, "Error - fdopen failed (%s)", 
 			strerror(errno));
@@ -1635,7 +1635,7 @@ int resolve_node(struct daemon_conf *config)
 				hints.ai_socktype = SOCK_STREAM;
 
 				rc2 = getaddrinfo(tmp_name, NULL, &hints, &ai);
-				if (rc2) {
+				if (rc2 != 0) {
 					audit_msg(LOG_ERR,
 					"Cannot resolve hostname %s (%s)",
 					tmp_name, gai_strerror(rc2));

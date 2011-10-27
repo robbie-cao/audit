@@ -45,23 +45,26 @@ Set limit in messages/sec (\fB0\fP=none). If this \fIrate\fP is non-zero and is 
 Read rules from a \fIfile\fP. The rules must be 1 per line and in the order that they are to be executed in. The rule file must be owned by root and not readable by other users or it will be rejected. The rule file may have comments embedded by starting the line with a '#' character. Rules that are read from a file are identical to what you would type on a command line except they are not preceded by auditctl (since auditctl is the one executing the file).
 .TP
 .B \-s
-Report the kernel's audit subsystem status. It will tell you the in-kernel values that can be set by \fB-e\fP, \fB-f\fP, \fB-r\fP, and \fB-b\fP options. The pid value is the process number of the audit daemon. Note that a pid of 0 indicates that the audit daemon is not running. The lost entry will tell you how many event records that have been discarded due to the kernel audit queue overflowing. The backlog field tells how many event records are currently queued waiting for auditd to read them.
+Report status. Note that a pid of 0 indicates that the audit daemon is not running.
 .TP
 .BI \-t
 Trim the subtrees after a mount command.
 .TP
-.BI \-a\  [ list,action | action,list ]
-Append rule to the end of \fIlist\fP with \fIaction\fP. Please note the comma separating the two values. Omitting it will cause errors. The fields may be in either order. It could be list,action or action,list. The following describes the valid \fIlist\fP names:
+.BI \-a\  list,action
+Append rule to the end of \fIlist\fP with \fIaction\fP. Please note the comma separating the two values. Omitting it will cause errors. The following describes the valid \fIlist\fP names:
 .RS
 .TP 12
 .B task
 Add a rule to the per task list. This rule list is used only at the time a task is created -- when fork() or clone() are called by the parent task. When using this list, you should only use fields that are known at task creation time, such as the uid, gid, etc.
 .TP
+.B entry
+Add a rule to the syscall entry list. This list is used upon entry to a system call to determine if an audit event should be created.
+.TP
 .B exit
 Add a rule to the syscall exit list. This list is used upon exit from a system call to determine if an audit event should be created.
 .TP
 .B user
-Add a rule to the user message filter list. This list is used by the kernel to filter events originating in user space before relaying them to the audit daemon. It should be noted that the only fields that are valid are: uid, auid, gid, pid, subj_user, subj_role, subj_type, subj_sen, and subj_clr. All other fields will be treated as non-matching.
+Add a rule to the user message filter list. This list is used by the kernel to filter events originating in user space before relaying them to the audit daemon. It should be noted that the only fields that are valid are: uid, auid, gid, and  pid. All other fields will be treated as non-matching.
 .TP
 .B exclude
 Add a rule to the event type exclusion filter list. This list is used to filter events that you do not want to see. For example, if you do not want to see any avc messages, you would using this list to record that. The message type that you do not wish to see is given with the msgtype field. 
@@ -104,7 +107,7 @@ for the arch. The same applies to the 64 bit syscall table, you can use
 In this way, you can write rules that are somewhat arch independent because the family type will be auto detected. However, syscalls can be arch specific and what is available on x86_64, may not be available on ppc. The arch directive should precede the -S option so that auditctl knows which internal table to use to look up the syscall numbers.
 .TP
 .B auid
-The original ID the user logged in with. Its an abbreviation of audit uid. Sometimes its referred to as loginuid. Either the user account text or number may be used.
+The original ID the user logged in with. Its an abbreviation of audit uid. Sometimes its referred to as loginuid. Either the text or number may be used.
 .TP
 .B devmajor
 Device Major Number
@@ -113,28 +116,28 @@ Device Major Number
 Device Minor Number
 .TP
 .B dir
-Full Path of Directory to watch. This will place a recursive watch on the directory and its whole subtree. It can only be used on exit list. See "\fB\-w\fP".
+Full Path of Directory to watch. This will place a recursive watch on the directory and its whole subtree. Should only be used on exit list. See "\fB\-w\fP".
 .TP
 .B egid
-Effective Group ID. May be numeric or the groups name.
+Effective Group ID
 .TP
 .B euid
-Effective User ID. May be numeric or the user account name.
+Effective User ID
 .TP
 .B exit
 Exit value from a syscall. If the exit code is an errno, you may use the text representation, too.
 .TP
 .B fsgid
-Filesystem Group ID. May be numeric or the groups name.
+Filesystem Group ID
 .TP
 .B fsuid
-Filesystem User ID. May be numeric or the user account name.
+Filesystem User ID
 .TP
 .B filetype
 The target file's type. Can be either file, dir, socket, symlink, char, block, or fifo.
 .TP
 .B gid
-Group ID. May be numeric or the groups name.
+Group ID
 .TP
 .B inode
 Inode Number
@@ -200,7 +203,7 @@ If the exit value is >= 0 this is true/yes otherwise its false/no. When writing 
 Saved User ID. See getresuid(2) man page.
 .TP
 .B uid
-User ID. May be numeric or the user account name.
+User ID
 .RE
 .TP
 .BI \-w\  path

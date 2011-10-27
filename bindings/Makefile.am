@@ -22,6 +22,4 @@
 
 CONFIG_CLEAN_FILES = *.loT *.rej *.orig
 
-if HAVE_PYTHON
 SUBDIRS = python
-endif

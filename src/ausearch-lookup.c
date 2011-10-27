@@ -1,6 +1,6 @@
 /*
 * ausearch-lookup.c - Lookup values to something more readable
-* Copyright (c) 2005-06,2011 Red Hat Inc., Durham, North Carolina.
+* Copyright (c) 2005-06 Red Hat Inc., Durham, North Carolina.
 * All Rights Reserved. 
 *
 * This software may be freely redistributed and/or modified under the
@@ -96,7 +96,6 @@ const char *aulookup_syscall(llist *l, char *buf, size_t size)
 	return buf;
 }
 
-// See include/linux/net.h
 static struct nv_pair socktab[] = {
 	{SYS_SOCKET, "socket"},
 	{SYS_BIND, "bind"},
@@ -114,9 +113,7 @@ static struct nv_pair socktab[] = {
 	{SYS_SETSOCKOPT, "setsockopt"},
 	{SYS_GETSOCKOPT, "getsockopt"},
 	{SYS_SENDMSG, "sendmsg"},
-	{SYS_RECVMSG, "recvmsg"},
-	{SYS_ACCEPT4, "accept4"},
-	{SYS_RECVMMSG, "recvmmsg"}
+	{SYS_RECVMSG, "recvmsg"}
 };
 #define SOCK_NAMES (sizeof(socktab)/sizeof(socktab[0]))
 

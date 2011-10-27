@@ -45,9 +45,6 @@
 #include <gssapi/gssapi_generic.h>
 #include <krb5.h>
 #endif
-#ifdef HAVE_LIBCAP_NG
-#include <cap-ng.h>
-#endif
 #include "libaudit.h"
 #include "private.h"
 #include "remote-config.h"
@@ -457,14 +454,6 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-#ifdef HAVE_LIBCAP_NG
-	// Drop capabilities
-	capng_clear(CAPNG_SELECT_BOTH);
-	if (config.local_port && config.local_port < 1024)
-		capng_update(CAPNG_ADD, CAPNG_EFFECTIVE|CAPNG_PERMITTED,
-			CAP_NET_BIND_SERVICE);
-	capng_apply(CAPNG_SELECT_BOTH);
-#endif
 	syslog(LOG_NOTICE, "Audisp-remote started with queue_size: %zu",
 		q_queue_length(queue));
 

@@ -28,7 +28,7 @@
  */
 //_S(AUDIT_GET,                      "GET"                           )
 //_S(AUDIT_SET,                      "SET"                           )
-//_S(AUDIT_LIST,                     "LIST"                          )
+_S(AUDIT_LIST,                       "LIST"                          )
 //_S(AUDIT_ADD,                      "ADD"                           )
 //_S(AUDIT_DEL,                      "DEL"                           )
 _S(AUDIT_USER,                       "USER"                          )

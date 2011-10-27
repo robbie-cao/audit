@@ -93,7 +93,8 @@ static const struct kw_pair keywords[] =
   { NULL,		NULL }
 };
 
-static int audit_priority(int xerrno)
+/* FIXME: Make this static again after deprecated functions no longer need it */
+int hidden audit_priority(int xerrno)
 {
 	/* If they've compiled their own kernel and did not include
 	 * the audit susbsystem, they will get ECONNREFUSED. We'll
@@ -244,7 +245,7 @@ static int load_libaudit_config(const char *path)
 	}
 
 	/* it's ok, read line by line */
-	f = fdopen(fd, "rm");
+	f = fdopen(fd, "r");
 	if (f == NULL) {
 		audit_msg(LOG_ERR, "Error - fdopen failed (%s)",
 			strerror(errno));
@@ -595,10 +596,6 @@ int audit_add_rule_data(int fd, struct audit_rule_data *rule,
 {
 	int rc;
 
-	if (flags == AUDIT_FILTER_ENTRY) {
-		audit_msg(LOG_WARNING, "Use of entry filter is deprecated");
-		return -2;
-	}
 	rule->flags  = flags;
 	rule->action = action;
 	rc = audit_send(fd, AUDIT_ADD_RULE, rule, 
@@ -616,10 +613,6 @@ int audit_delete_rule_data(int fd, struct audit_rule_data *rule,
 {
 	int rc;
 
-	if (flags == AUDIT_FILTER_ENTRY) {
-		audit_msg(LOG_WARNING, "Use of entry filter is deprecated");
-		return -2;
-	}
 	rule->flags  = flags;
 	rule->action = action;
 	rc = audit_send(fd, AUDIT_DEL_RULE, rule, 

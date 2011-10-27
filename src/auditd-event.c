@@ -63,7 +63,6 @@ static void do_space_left_action(struct daemon_conf *config, int admin);
 static void do_disk_full_action(struct daemon_conf *config);
 static void do_disk_error_action(const char *func, struct daemon_conf *config,
 	int err);
-static void check_excess_logs(struct auditd_consumer_data *data); 
 static void rotate_logs_now(struct auditd_consumer_data *data);
 static void rotate_logs(struct auditd_consumer_data *data, 
 		unsigned int num_logs);
@@ -139,7 +138,6 @@ int init_event(struct daemon_conf *config)
 
 	if (config->daemonize == D_BACKGROUND) {
 		check_log_file_size(&consumer_data);
-		check_excess_logs(&consumer_data);
 		check_space_left(consumer_data.log_fd, config);
 	}
 	format_buf = (char *)malloc(MAX_AUDIT_MESSAGE_LENGTH +
@@ -667,40 +665,6 @@ static void rotate_logs_now(struct auditd_consumer_data *data)
 		shift_logs(data);
 	else
 		rotate_logs(data, 0);
-}
-
-/* Check for and remove excess logs so that we don't run out of room */
-static void check_excess_logs(struct auditd_consumer_data *data)
-{
-	int rc;
-	unsigned int i, len;
-	char *name;
-
-	// Only do this if rotate is the log size action
-	// and we actually have a limit
-	if (data->config->max_log_size_action != SZ_ROTATE ||
-			data->config->num_logs < 2)
-		return;
-	
-	len = strlen(data->config->log_file) + 16;
-	name = (char *)malloc(len);
-	if (name == NULL) { /* Not fatal - just messy */
-		audit_msg(LOG_ERR, "No memory checking excess logs");
-		return;
-	}
-
-	// We want 1 beyond the normal logs	
-	i=data->config->num_logs;
-	rc=0;
-	while (rc == 0) {
-		snprintf(name, len, "%s.%d", data->config->log_file, i++);
-		rc=unlink(name);
-		if (rc == 0)
-			audit_msg(LOG_NOTICE,
-			    "Log %s removed as it exceeds num_logs parameter",
-			     name);
-	}
-	free(name);
 }
  
 static void rotate_logs(struct auditd_consumer_data *data, 
@@ -1335,7 +1299,6 @@ static void reconfigure(struct auditd_consumer_data *data)
 		fs_admin_space_warning = 0;
 		fs_space_left = 1;
 		logging_suspended = 0;
-		check_excess_logs(data);
 		check_space_left(data->log_fd, oconf);
 		if (logging_suspended == 0)
 			logging_suspended = saved_suspend;
