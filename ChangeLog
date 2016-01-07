@@ -1,3 +1,6 @@
+2.4.6
+- In auparse. terminate the generated strings (Burn Alting)
+
 2.4.5
 - Fix auditd disk flushing for data and sync modes
 - Fix auditctl to not show options not supported on older OS
